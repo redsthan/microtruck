@@ -62,11 +62,11 @@ class Instruction:
                     case 0b11:
                         robot.PSL(self.deque, self.var1)
             case 0xC:
-                robot.IMP(self.scode, self.var1)
+                robot.CMP(self.var1, self.var2)
             case 0xD:
-                robot.EXP(self.scode, self.var1)
+                robot.IMP(self.scode, self.var1)
             case 0xE:
-                robot.CMP(self.var1)
+                robot.EXP(self.scode, self.var1)
             case 0xF:
                 robot.STP(self.data)
             case _:
@@ -80,9 +80,8 @@ class Program:
             dbytes.append(b&0xF)
         self.instructions = [Instruction(dbytes[i-2:i+1]) for i in range(2, len(dbytes), 3)]
         
-    def __iter__(self):
-        for instruction in self.instructions:
-            yield instruction
+    def __getitem__(self, i):
+        return self.instructions[i]
 
 class Robot:
     def __init__(self, program: Program):
@@ -94,8 +93,10 @@ class Robot:
         self.program = program
         
     def __call__(self):
-        for instruction in self.program:
-            if not self.running and instruction.opcode != 0xF:
+        self.pc = 0
+        while True:
+            instruction = self.program[self.pc]
+            if self.running and instruction.opcode == 0xF:
                 break
             instruction(self)
         
@@ -111,7 +112,7 @@ class Robot:
     
     def MOV(self, var1: int, var2: int):
         print("MOV: ", var1, var2)
-        self.registers[var1] = self.registers[var2]
+        self.registers[var2] = self.registers[var1]
         self.pc += 1
     
     def JMP(self, data: int):
@@ -120,8 +121,10 @@ class Robot:
         
     def JMC(self, data: int):
         print("JMC: ", data)
-        if self.registers[0] == 0x0001:
+        if self.registers[0] == 0x01:
             self.pc = data
+        else:
+            self.pc += 1
     
     def AND(self, var1: int, var2: int):
         print("AND: ", var1, var2)
@@ -155,7 +158,7 @@ class Robot:
             
     def INC(self, var1: int, data: int):
         print("INC: ", var1, data)
-        if not data&0x10:
+        if not data&0b1000:
             self.registers[var1] += data
         else:
             self.registers[var1] -= ~data + 1
@@ -163,7 +166,7 @@ class Robot:
     
     def SHF(self, data: int, var1: int):
         print("SHF: ", data, var1)
-        if data&0x10:
+        if data&0b1000:
             self.registers[var1] = self.registers[var1]<<data
         else:
             self.registers[var1] = self.registers[var1]>>(~data+1)
@@ -196,11 +199,11 @@ class Robot:
         self.stacks[dq].appendleft(self.registers[var1])
         self.pc += 1
         
-    def CMP(self, var1: int):
-        print("CMP: ", var1)
-        if self.registers[var1] == self.registers[0]:
+    def CMP(self, var1: int, var2: int):
+        print("CMP: ", var1, var2)
+        if self.registers[var1] == self.registers[var2]:
             self.registers[0] = 0x00
-        elif self.registers[var1] > self.registers[0]:
+        elif self.registers[var1] > self.registers[var2]:
             self.registers[0] = 0x01
         else:
             self.registers[0] = 0xFF
@@ -228,7 +231,9 @@ class Robot:
     
     
 if __name__ == "__main__":
-    byt = b"\xF5\x50\xFF\xFA\xA0"
+    #F5 50 00 10 10 0A 10 29 11 C1 23 06 FA A0
+    #\xF5\x50\x00\x10\x10\x0A\x10\x29\x11\xC1\x23\x06\xFA\xA0
+    byt = b"\xF5\x50\x00\x10\x10\x0A\x10\x29\x11\xC2\x13\x05\xFA\xA0"
     prg = Program(byt)
     robot = Robot(prg)
     robot()

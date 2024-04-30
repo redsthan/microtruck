@@ -77,14 +77,14 @@ Ce tableau fera donc 12 cases de large.
 **Code :** 9 *(1001)* \
 **Datas :**  4b+4b \
 **Datatype :** addr + brut \
-**Description :** Ajoute à la variable le nombre donné s'il est inférieur ou égal à 127 *(0111 111)*, ou soustrait l'inverse binaire du nombre + 1. Les même règles que ADD et SUB s'appliquent.
+**Description :** Ajoute à la variable le nombre donné s'il est inférieur ou égal à 7 *(0111)*, ou soustrait l'inverse binaire du nombre + 1. Les même règles que ADD et SUB s'appliquent.
 
 ### SHF
 
 **Code :** A *(1010)* \
 **Datas :**  4b+4b \
 **Datatype :** brut + addr \
-**Description :** Décale vers la gauche la variable du nombre donné si ce nombre est inférieur ou égal à 127 *(0111 1111)* (la retenue contient alors le bit immédiatement plus fort que le bit de poids fort après l'opération), ou décale vers la droite de l'inverse binaire du nombre + 1.
+**Description :** Décale vers la gauche la variable du nombre donné si ce nombre est inférieur ou égal à 7 *(0111)* (la retenue contient alors le bit immédiatement plus fort que le bit de poids fort après l'opération), ou décale vers la droite de l'inverse binaire du nombre + 1.
 
 ### DEQ
 
