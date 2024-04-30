@@ -81,14 +81,14 @@ Ce tableau fera donc 12 cases de large.
 
 ### SHF
 
-**Code :** 10 *(1010)* \
+**Code :** A *(1010)* \
 **Datas :**  4b+4b \
 **Datatype :** brut + addr \
 **Description :** Décale vers la gauche la variable du nombre donné si ce nombre est inférieur ou égal à 127 *(0111 1111)* (la retenue contient alors le bit immédiatement plus fort que le bit de poids fort après l'opération), ou décale vers la droite de l'inverse binaire du nombre + 1.
 
 ### DEQ
 
-**Code :** 11 *(1011)* \
+**Code :** B *(1011)* \
 **Datas :**  2+2+4 \
 **Datatype :** code + addr + addr
 
@@ -115,28 +115,34 @@ Ce tableau fera donc 12 cases de large.
 
 ### CMP
 
-**Code :** 12 *(1100)* \
+**Code :** C *(1100)* \
 **Datas :**  4b+4b \
 **Datatype :** addr + addr \
 **Description :** Compare les deux variables. 1 *(0000 0001)* pour supérieur, 0 *(0000 0000)* pour égal et 255 *(1111 1111)* pour inférieur. Le résultat est stocké dans l'EDX.
 
 ### IMP
 
-**Code :** 13 *(1101)* \
+**Code :** D *(1101)* \
 **Datas :**  4b+4b \
 **Datatype :** code + addr \
 **Description :** Récupère la donnée du capteur et la charge dans la variable.
 
 ### EXP
 
-**Code :** 14 *(1110)* \
+**Code :** E *(1110)* \
 **Datas :**  4b+4b \
 **Datatype :** code + addr \
 **Description :** Envoie la valeur de la variable à l'actionneur.
 
 ### STP
 
-**Code :** 15 *(1111)* \
+**Code :** F *(1111)* \
 **Datas :**  8 \
 **Datatype :** Code \
-**Description :** Indice de début/fin de programme ou de feuille. 255 *(1111 1111)* pour le début d'une feuille, 60 *(0011 1100)* pour la fin d'une feuille, 85 *(0101 0101)* pour le début d'un programme et 170 *(1010 1010)* pour la fin d'un programme.
+**Description :** Indice de début/fin de programme ou de feuille. FF *(1111 1111)* pour le début d'une feuille, 3C *(0011 1100)* pour la fin d'une feuille (ces deux instructions précédentes n'apparaîtront jamais dans le programme), 55 *(0101 0101)* pour le début d'un programme et AA *(1010 1010)* pour la fin d'un programme.
+
+## Structures
+
+### Variables
+
+L'adresse de variable 0 est réservée à l'EDX, mais 15 autres variables sont disponibles, d'adresse 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F.
